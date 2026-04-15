@@ -4,37 +4,46 @@
 #include "gmock/gmock.h"
 #include "rapidcheck/gtest.h"
 #include "sorting.h"
+#include "test_helpers.h"
 
 TEST(MinIndexOfArrayTests, SimpleMinIndexAtFrontOfArray) {
-    /*
-     * See if we can find the index of the minimum value when it is at the front of the array
-     */
+
+    int testArr[4] = {0,1,2,3};
+
+    EXPECT_EQ(min_index_of_array(testArr, 4), 0);
 }
 
 TEST(MinIndexOfArrayTests, SimpleMinIndexAtEndOfArray) {
-    /*
-     * See if we can find the index of the minimum value when it is at the end of the array
-     */
+
+    int testArr[4] = {3,2,1,0};
+
+    EXPECT_EQ(min_index_of_array(testArr, 4), 3);
 }
 
 TEST(MinIndexOfArrayTests, SimpleMinIndexAtMiddleOfArray) {
-    /*
-     * See if we can find the index of the minimum value when it is somewhere
-     * in the "middle" of the array.
-     */
+
+    int testArr[4] = {3,2,0,1};
+
+    EXPECT_EQ(min_index_of_array(testArr, 4), 2);
+
 }
 
 TEST(MinIndexOfArrayTests, SimpleDuplicateMinimums) {
-    /*
-     * See if we return the index of the first minimum in the array
-     * When there are multiple values that are the minimum.
-     */
+
+    int testArr[4] = {3,0,0,1};
+
+    EXPECT_EQ(min_index_of_array(testArr, 4), 1);
 }
 
 TEST(MinIndexOfArrayTests, SimpleArrayDoesNotChange) {
-    /*
-     * Check that finding the minimum of the array did not change the contents of the array.
-     */
+
+    int testArr[4] = {0,1,2,3};
+    int minIndex = min_index_of_array(testArr, 4);
+
+    for (int i = 0; i<4 ; i++) {
+        EXPECT_EQ(testArr[i], i);
+    }
+
 }
 
 
@@ -44,12 +53,33 @@ RC_GTEST_PROP(MinIndexOfArrayTests,
     /* Check that the value at the location of the minimum index
      * is not larger than any of the other values in the array
      */
+    auto values = *rc::gen::nonEmpty(rc::gen::arbitrary<std::vector<int>>());
+
+    int* copiedArr = new int[values.size()];
+    copy_vector_to_array(values, copiedArr);
+
+    int minValIndex = min_index_of_array(copiedArr, (int)values.size());
+
+    for (int i = 0; i < (int)values.size(); i++) {
+        RC_ASSERT(copiedArr[minValIndex] <= copiedArr[i]);
+    }
+
+    delete[] copiedArr;
 }
 
 RC_GTEST_PROP(MinIndexOfArrayTests,
               PropertyArrayDoesNotChange,
               ()) {
-    /*
-     * Check that finding the minimum of the array did not change the contents of the array.
-     */
+    auto values = *rc::gen::nonEmpty(rc::gen::arbitrary<std::vector<int>>());
+
+    int* copiedArr = new int[values.size()];
+    copy_vector_to_array(values, copiedArr);
+
+    int minValIndex = min_index_of_array(copiedArr, (int)values.size());
+
+    for (int i = 0; i < (int)values.size(); i++) {
+        RC_ASSERT(values[i] == copiedArr[i]);
+    }
+
+    delete[] copiedArr;
 }
