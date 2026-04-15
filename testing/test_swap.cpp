@@ -9,26 +9,40 @@
 
 
 TEST(SwapTests, SimpleSwapTwoValues) {
-    /*
-     * Swap two values and see if the swap was successful.
-     */
+
+    int a = 1;
+    int b = 2;
+
+    swap(&a, &b);
+
+    EXPECT_EQ(a , 6);
+    EXPECT_EQ(b , 5);
 }
 
 TEST(SwapTests, SimpleSwapValuesInArray) {
-    /*
-     * Swap a few values in an array.
-     * Check that the ones that swapped did swap and the ones that didn't swap
-     * are still at the same locations
-     */
+
+    int num_arr[3] = {0,1,2};
+
+    swap(&num_arr[0], &num_arr[1]);
+
+    EXPECT_EQ(num_arr[0] , 1);
+    EXPECT_EQ(num_arr[1] , 0);
+    EXPECT_EQ(num_arr[2] , 2);
+
 }
 
 RC_GTEST_PROP(SwapTests,
               PropertySwapTwoValues,
               (int a_start, int b_start)
 ) {
-    /*
-     * Swap two values and see if the swap was successful.
-     */
+    int num1 = a_start;
+    int num2 = b_start;
+
+    swap(&num1, &num2);
+
+    RC_ASSERT(num1 == b_start);
+    RC_ASSERT(num2 == a_start);
+
 }
 
 
@@ -36,7 +50,22 @@ RC_GTEST_PROP(SwapTests,
               PropertySwapValuesInArray,
               (const std::vector<int>& values)
 ) {
-    /*
-     * Swap two values in an array. See that they swapped and the others did not
-     */
+    RC_PRE(!values.empty());
+
+    int* copiedArr = new int[values.size()];
+
+    copy_vector_to_array(values, copiedArr);
+
+    int indexNum1 = *rc::gen::inRange(0, (int)values.size());
+    int indexNum2 = *rc::gen::inRange(0, (int)values.size());
+
+    int originalNum1 = copiedArr[indexNum1];
+    int originalNum2 = copiedArr[indexNum2];
+
+    swap(&copiedArr[indexNum1], &copiedArr[indexNum2]);
+
+    RC_ASSERT(copiedArr[indexNum2] == originalNum1);
+    RC_ASSERT(copiedArr[indexNum1] == originalNum2);
+
+    delete[] copiedArr;
 }
