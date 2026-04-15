@@ -6,39 +6,61 @@
 #include "test_helpers.h"
 
 TEST(MakeSortedTests, SimpleSortSortedArray) {
-    /*
-     * Check that we can sort an array that is already sorted.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
+
+    int sorted_array[4] = {0,1,2,3};
+    make_sorted(sorted_array, 4);
+
+    for (int i = 0 ; i < 4; i++) {
+       EXPECT_EQ(sorted_array[i], i);
+    }
 }
 
 TEST(MakeSortedTests, SimpleSortReverseSortedArray) {
-    /*
-     * Check that we can sort an array that is reverse sorted order.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
+
+    int reverseSortedArray[4] = {3,2,1,0};
+    make_sorted(reverseSortedArray, 4);
+
+    for (int i = 0 ; i < 4; i++) {
+        EXPECT_EQ(reverseSortedArray[i], i);
+    }
 }
 
 
 TEST(MakeSortedTests, SimpleSortAverageArray) {
-    /*
-     * Check that we can sort an array where the elements in it are in random order.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
+
+    int randomArray[4] = {1,3,0,2};
+    make_sorted(randomArray, 4);
+
+    for (int i = 0 ; i < 4; i++) {
+        EXPECT_EQ(randomArray[i], i);
+    }
+
 }
 
 TEST(MakeSortedTests, SimpleSortArrayWithDuplicates) {
-    /*
-     * Check that we can sort an array where there are duplicate elements in it.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
+
+    int dublicatesArray[4] = {3,1,1,2};
+    make_sorted(dublicatesArray, 4);
+
+    EXPECT_EQ(dublicatesArray[0], 1);
+    EXPECT_EQ(dublicatesArray[1], 1);
+    EXPECT_EQ(dublicatesArray[2], 2);
+    EXPECT_EQ(dublicatesArray[3], 3);
+
 }
 
 RC_GTEST_PROP(MakeSortedTests,
               PropertyAfterSortingValuesAreInAscendingOrder,
               ( std::vector<int> values)
 ) {
-    /* Test that after sorting an array, the values are in ascending order
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
+    int* randomArr = new int[values.size()];
+    copy_vector_to_array(values, randomArr);
+
+    make_sorted(randomArr, (int)values.size());
+
+    for (int i = 0 ; i < ((int)values.size()) - 1; i++) {
+        RC_ASSERT(randomArr[i] <= randomArr[i + 1]);
+    }
+
+    delete[] randomArr;
 }
