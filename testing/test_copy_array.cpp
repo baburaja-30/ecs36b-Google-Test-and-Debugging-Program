@@ -8,29 +8,37 @@
 #include "rapidcheck/gtest.h"
 
 TEST(CopyArrayTests, SimpleValuesAreSame) {
-    /*
-     * Check that the values in the copy are the same as the values in the original array.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
 
+    int numArr[4] = {0,1,2,3};
+    int* copiedArr = copy_array(numArr, 4);
 
+    for (int i = 0; i < 4; i++) {
+        EXPECT_EQ(numArr[i], copiedArr[i]);
+    }
+    delete[] copiedArr;
 }
 
 TEST(CopyArrayTests, SimpleOriginalDoesNotChange) {
-    /*
-     * Check that the  values in the original array did not change.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
 
+    int numArr[4] = {0,1,2,3};
+    int* copiedArr = copy_array(numArr, 4);
+
+    copiedArr[0] = 11;
+
+    for (int i = 0; i < 4; i++) {
+        EXPECT_EQ(numArr[i], 0 + i);
+    }
+    delete[] copiedArr;
 }
 
 TEST(CopyArrayTests, SimpleCopyWasMade) {
-    /*
-     * Check that a copy was actually made
-     * (ar and copy point to different locations in memory and no parts of the two arrays overlap)
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
 
+    int numArr[4] = {0,1,2,3};
+    int* copiedArr = copy_array(numArr, 4);
+
+    EXPECT_NE(numArr, copiedArr);
+
+    delete[] copiedArr;
 }
 
 
@@ -38,34 +46,58 @@ RC_GTEST_PROP(CopyArrayTests,
               PropertyValuesAreSame,
               (const std::vector<int>& values)
 ) {
-    /*
-     * Check that the values in the copy are the same as the values in the original array.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
+    RC_PRE(!values.empty());
 
+    int* testArr = new int[values.size()];
+    copy_vector_to_array(values, testArr);
+
+    int* copiedArr = copy_array(testArr, values.size());
+
+    for (int i = 0; i < (int)values.size(); i++) {
+        RC_ASSERT(testArr[i] == copiedArr[i]);
+    }
+    delete[] testArr;
+    delete[] copiedArr;
 }
 
 RC_GTEST_PROP(CopyArrayTests,
               PropertyOriginalDoesNotChange,
               (const std::vector<int>&values)
 ) {
-    /*
-     * Check that the  values in the original array did not change.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
 
+    RC_PRE(!values.empty());
+
+    int* testArr = new int[values.size()];
+    copy_vector_to_array(values, testArr);
+
+    int* copiedArr = copy_array(testArr, values.size());
+
+    copiedArr[0] = copiedArr[0] + 1; // always garuntees to modify the array value
+
+    for (int i = 0; i < (int)values.size(); i++) {
+        RC_ASSERT(testArr[i] == values[i]);
+    }
+
+    delete[] testArr;
+    delete[] copiedArr;
 }
 
 RC_GTEST_PROP(CopyArrayTests,
               PropertyCopyWasMade,
               (const std::vector<int>&values)
 ) {
-    /*
-  * Check that a copy was actually made
-  * (ar and copy point to different locations in memory and no parts of the two arrays overlap)
-  * Don't forget to free any memory that was dynamically allocated as part of your test.
-  */
 
+    RC_PRE(!values.empty());
+
+    int* testArr = new int[values.size()];
+    copy_vector_to_array(values, testArr);
+
+    int* copiedArr = copy_array(testArr, values.size());
+
+    RC_ASSERT(testArr != copiedArr);
+
+    delete[] testArr;
+    delete[] copiedArr;
 }
 
 
