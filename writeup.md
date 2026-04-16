@@ -174,3 +174,33 @@ if (ar[i] < ar[min_index]) {
 }
 return min_index;
 ```
+
+### Bug 5
+
+### Location
+
+Lines 23-25 in `sorting.cpp`
+
+```c
+int min_index = min_index_of_array(ar + i, len);
+swap(ar + i, ar + min_index);
+```
+
+### How the bug was located
+
+The `MakeSortedTests` failed due to the arrays were not being sorted correctly. 
+
+### Description
+
+Two bugs existed in `make_sorted`:
+1. `min_index_of_array` was called with `len` instead of `len - i`. It was searching the already sorted portion of the array on each iteration
+2. `swap` was called with `ar + min_index` instead of `ar + i + min_index`. Since `min_index_of_array` was called with `ar + i` as the starting point, the returned index is relative to that array and not the full array
+
+### Fix
+
+Pass `len - i` to `min_index_of_array` and add `i` to `min_index` in the swap call.
+
+```c
+int min_index = min_index_of_array(ar + i, len - i);
+swap(ar + i, ar + i + min_index);
+```
