@@ -38,7 +38,7 @@ TEST(MinIndexOfArrayTests, SimpleDuplicateMinimums) {
 TEST(MinIndexOfArrayTests, SimpleArrayDoesNotChange) {
 
     int testArr[4] = {0,1,2,3};
-    int minIndex = min_index_of_array(testArr, 4);
+    min_index_of_array(testArr, 4);
 
     for (int i = 0; i<4 ; i++) {
         EXPECT_EQ(testArr[i], i);
@@ -75,7 +75,7 @@ RC_GTEST_PROP(MinIndexOfArrayTests,
     int* copiedArr = new int[values.size()];
     copy_vector_to_array(values, copiedArr);
 
-    int minValIndex = min_index_of_array(copiedArr, (int)values.size());
+    min_index_of_array(copiedArr, (int)values.size());
 
     for (int i = 0; i < (int)values.size(); i++) {
         RC_ASSERT(values[i] == copiedArr[i]);

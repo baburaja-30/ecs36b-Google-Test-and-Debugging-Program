@@ -23,13 +23,13 @@ auto vector_of_ints_to_vector_of_strings(const std::vector<int>& numbers) {
 
 TEST(ParseArgsTests, SimpleCheckArgumentsParsedSuccessfully) {
 
-    char* fakeArgv[] = {"./SortInts", "1", "2", "3"};
+    const char* fakeArgv[] = {"./SortInts", "1", "2", "3"};
     int fakeArgc = 4;
 
     int* ar_out = nullptr;
     int len_out = 0;
 
-    parse_args(fakeArgc, fakeArgv, ar_out, &len_out);
+    parse_args(fakeArgc, (char**)fakeArgv, &ar_out, &len_out);
 
     EXPECT_EQ(len_out, 3);
 
@@ -40,13 +40,13 @@ TEST(ParseArgsTests, SimpleCheckArgumentsParsedSuccessfully) {
 }
 
 TEST(ParseArgsTests, SimpleCheckParseNoArgs) {
-    char* fakeArgv[] = {"./SortInts"};
+    const char* fakeArgv[] = {"./SortInts"};
     int fakeArgc = 1;
 
     int* ar_out = nullptr;
     int len_out = 0;
 
-    parse_args(fakeArgc, fakeArgv, ar_out, &len_out);
+    parse_args(fakeArgc, (char**)fakeArgv, &ar_out, &len_out);
 
     EXPECT_EQ(ar_out, nullptr);
     EXPECT_EQ(len_out, 0);
@@ -81,7 +81,7 @@ RC_GTEST_PROP(ParseArgsTests,
     int* ar_out = nullptr;
     int len_out = 0;
 
-    parse_args(fakeArgc, fakeArgv.data(), ar_out, &len_out);
+    parse_args(fakeArgc, fakeArgv.data(), &ar_out, &len_out);
 
     RC_ASSERT(len_out == (int)randomVector.size());
 
@@ -107,7 +107,7 @@ RC_GTEST_PROP(ParseArgsTests,
     int* ar_out = nullptr;
     int len_out = 0;
 
-    parse_args(fakeArgc, fakeArgv.data(), ar_out, &len_out);
+    parse_args(fakeArgc, fakeArgv.data(), &ar_out, &len_out);
 
     RC_ASSERT(len_out == 0);
     RC_ASSERT(ar_out == nullptr);
