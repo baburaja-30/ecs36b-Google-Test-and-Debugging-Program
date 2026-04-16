@@ -5,57 +5,74 @@
 #include "rapidcheck/gtest.h"
 
 TEST(GetSortedTests, SimpleSortSortedArray) {
-    /*
-     * Check that we can sort an array that is already sorted.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
 
+    int randomArr[4] = {0,1,2,3};
+    int* sortedCopiedArray = get_sorted(randomArr, 4);
 
+    for (int i = 0 ; i < 4; i++) {
+        EXPECT_EQ(sortedCopiedArray[i], i);
+    }
+    delete[] sortedCopiedArray;
 }
 
 TEST(GetSortedTests, SimpleSortReverseSortedArray) {
-    /*
-     * Check that we can sort an array that is reverse sorted order.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
 
+    int randomArr[4] = {3,2,1,0};
+    int* sortedCopiedArray = get_sorted(randomArr, 4);
+
+    for (int i = 0 ; i < 4; i++) {
+        EXPECT_EQ(sortedCopiedArray[i], i);
+    }
+    delete[] sortedCopiedArray;
 }
 
 TEST(GetSortedTests, SimpleSortAverageArray) {
-    /*
-     * Check that we can sort an array where the elements in it are in random order.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
 
+    int randomArr[4] = {2,1,3,0};
+    int* sortedCopiedArray = get_sorted(randomArr, 4);
+
+    for (int i = 0 ; i < 4; i++) {
+        EXPECT_EQ(sortedCopiedArray[i], i);
+    }
+    delete[] sortedCopiedArray;
 
 }
 
 TEST(GetSortedTests, SimpleSortArrayWithDuplicates) {
-    /*
-     * Check that we can sort an array where there are duplicate elements in it.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
 
+    int dublicatesArray[4] = {3,1,1,2};
+    int* sortedCopiedArray = get_sorted(dublicatesArray, 4);
 
+    EXPECT_EQ(sortedCopiedArray[0], 1);
+    EXPECT_EQ(sortedCopiedArray[1], 1);
+    EXPECT_EQ(sortedCopiedArray[2], 2);
+    EXPECT_EQ(sortedCopiedArray[3], 3);
+
+    delete[] sortedCopiedArray;
 }
 
 TEST(GetSortedTests, SimpleOriginalDoesNotChange) {
-    /*
-     * Check that the original array was not modified.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
 
+    int randomArr[4] = {2,1,3,0};
+    int* sortedCopiedArray = get_sorted(randomArr, 4);
+
+    EXPECT_EQ(randomArr[0], 2);
+    EXPECT_EQ(randomArr[1], 1);
+    EXPECT_EQ(randomArr[2], 3);
+    EXPECT_EQ(randomArr[3], 0);
+
+    delete[] sortedCopiedArray;
 
 }
 
 TEST(GetSortedTests, SimpleCopyWasMade) {
-    /*
-     * Check that the sorted array is copy of the original array in sorted order.
-     * (ar and copy point to different locations in memory and no parts of the two arrays overlap)
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
 
+    int randomArr[4] = {2,1,3,0};
+    int* sortedCopiedArray = get_sorted(randomArr, 4);
 
+    EXPECT_NE(sortedCopiedArray, randomArr);
+
+    delete[] sortedCopiedArray;
 }
 
 
@@ -63,9 +80,17 @@ RC_GTEST_PROP(GetSortedTests,
               PropertyAfterSortingValuesAreInAscendingOrder,
               ( std::vector<int> values)
 ) {
-    /* Check that after sorting an array, the values are in ascending order
-     * Don't forget to free any memory that was dynamically allocated as part of this test
-     */
+    int* randomArr = new int[values.size()];
+    copy_vector_to_array(values, randomArr);
+
+    int* sortedCopiedArray = get_sorted(randomArr, (int)values.size());
+
+    for (int i = 0 ; i < (int)values.size() - 1; i++) {
+        RC_ASSERT(sortedCopiedArray[i] <= sortedCopiedArray[i + 1]);
+    }
+
+    delete[] randomArr;
+    delete[] sortedCopiedArray;
 
 }
 
@@ -73,22 +98,33 @@ RC_GTEST_PROP(GetSortedTests,
               PropertyOriginalDoesNotChange,
               (const std::vector<int>&values)
 ) {
-    /*
-     * Check that the original array was not modified.
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
-    ;
+    int* randomArr = new int[values.size()];
+    copy_vector_to_array(values, randomArr);
+
+    int* sortedCopiedArray = get_sorted(randomArr, (int)values.size());
+
+    for (int i = 0 ; i < (int)values.size(); i++) {
+        RC_ASSERT(randomArr[i] == values[i]);
+    }
+
+    delete[] randomArr;
+    delete[] sortedCopiedArray;
 }
 
 RC_GTEST_PROP(GetSortedTests,
               PropertyCopyWasMade,
               (const std::vector<int>&values)
 ) {
-    /*
-     * Check that the sorted array is copy of the original array in sorted order.
-     * (ar and copy point to different locations in memory and no parts of the two arrays overlap)
-     * Don't forget to free any memory that was dynamically allocated as part of your test.
-     */
+
+    int* randomArr = new int[values.size()];
+    copy_vector_to_array(values, randomArr);
+
+    int* sortedCopiedArray = get_sorted(randomArr, (int)values.size());
+
+    RC_ASSERT(randomArr != sortedCopiedArray);
+
+    delete[] randomArr;
+    delete[] sortedCopiedArray;
 
 }
 
