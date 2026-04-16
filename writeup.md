@@ -141,3 +141,36 @@ int temp = *a;
 *a = *b;
 *b = temp;
 ```
+
+### Bug 4 (min_index_of_array)
+
+### Location
+
+Lines 57 and 62 in `sorting.cpp`
+
+```c
+if (ar[i] > ar[min_index]) {
+...
+return ar[min_index];
+```
+
+### How the bug was located
+
+The `MinIndexOfArrayTests` failed. The function was returning `3` instead of `0`, `1`, or `2`.
+
+### Description
+
+Two bugs existed in this function:
+1. The comparison used `>` instead of `<` hence making the function find the **maximum** index instead of the minimum
+2. The return statement returned `ar[min_index]` instead of `min_index`
+
+### Fix
+
+Changed `>` to `<` in the comparison and changed the return to `min_index`.
+
+```c
+if (ar[i] < ar[min_index]) {
+    min_index = i;
+}
+return min_index;
+```
