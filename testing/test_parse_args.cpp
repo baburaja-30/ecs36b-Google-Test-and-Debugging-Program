@@ -6,29 +6,52 @@
 #include "rapidcheck/gtest.h"
 
 auto word_generator() {
-    /* Creates a generator for a string made up of
-     * characters from [a - z]
-     */
+    return rc::gen::map(
+        rc::gen::container<std::string>(rc::gen::inRange('a', 'z')),
+        [](std::string s) { return s; }
+    );
 }
 
 auto vector_of_ints_to_vector_of_strings(const std::vector<int>& numbers) {
-    /* Create a vector of strings from a vector of ints
-     */
+    std::vector<std::string> strings;
+    for (int num : numbers) {
+        strings.push_back(std::to_string(num));
+    }
+    return strings;
 }
 
 
 TEST(ParseArgsTests, SimpleCheckArgumentsParsedSuccessfully) {
-    /*
-     * Check that you parse the command line arguments correctly.
-     * (ar_out and len_out are set to the right values).
-     * Don't forget to free any memory that was dynamically allocated as part of your test.'
-     */
+
+    char* fakeArgv[] = {"./SortInts", "1", "2", "3"};
+    int fakeArgc = 4;
+
+    int* ar_out = nullptr;
+    int len_out = 0;
+
+    parse_args(fakeArgc, fakeArgv, ar_out, &len_out);
+
+    EXPECT_EQ(len_out, 3);
+
+    for (int i = 0; i < 3; i++) {
+        EXPECT_EQ(ar_out[i], i + 1);
+    }
+    free(ar_out);
 }
 
 TEST(ParseArgsTests, SimpleCheckParseNoArgs) {
-    /*
-     * Check that you parse you can successfully parse "no" command line arguments.
-     */
+    char* fakeArgv[] = {"./SortInts"};
+    int fakeArgc = 1;
+
+    int* ar_out = nullptr;
+    int len_out = 0;
+
+    parse_args(fakeArgc, fakeArgv, ar_out, &len_out);
+
+    EXPECT_EQ(ar_out, nullptr);
+    EXPECT_EQ(len_out, 0);
+
+    free(ar_out);
 }
 
 
@@ -36,17 +59,60 @@ RC_GTEST_PROP(ParseArgsTests,
               PropertyCheckArgumentsParsedSuccessfully,
               ()
 ) {
-    /* Check that we can correctly parse the command line
-     * arguments when we receive 1 or more arguments.
-     * Don't forget to free any memory that was dynamically allocated as part of this test
-     */
+
+    // Generates a random vector of ints {1, 2, 3}
+    std::vector<int> randomVector = *rc::gen::nonEmpty(rc::gen::arbitrary<std::vector<int>>());
+
+    // Converts the int vector into string vector as cmd line uses strings
+    std::vector<std::string> stringVector = vector_of_ints_to_vector_of_strings(randomVector);
+
+    // creates a vector of char* simulating real argv & adds a fake program name at the start
+    std::vector<char*> fakeArgv;
+    fakeArgv.push_back((char*)"./SortInts");
+
+    // Loop sequence to append new str in the argv
+    for (int i = 0; i < (int)stringVector.size(); i++) {
+        std::string& s = stringVector[i];
+        fakeArgv.push_back(s.data());
+    }
+
+    // Set up for Tests
+    int fakeArgc = fakeArgv.size();
+    int* ar_out = nullptr;
+    int len_out = 0;
+
+    parse_args(fakeArgc, fakeArgv.data(), ar_out, &len_out);
+
+    RC_ASSERT(len_out == (int)randomVector.size());
+
+    for (int i = 0; i < (int)randomVector.size(); i++) {
+        RC_ASSERT(ar_out[i] == randomVector[i]);
+    }
+
+    free(ar_out);
+
 }
 
 RC_GTEST_PROP(ParseArgsTests,
               PropertyCheckParseNoArgs,
               ()
 ) {
-    /*
-     * Check that you parse you can successfully parse "no" command line arguments.
-     */
+
+    // Creates a vector of char* simulating real argv & adds a fake program name at the start
+    std::vector<char*> fakeArgv;
+    fakeArgv.push_back((char*)"./SortInts");
+
+    // Set up for Tests
+    int fakeArgc = fakeArgv.size();
+    int* ar_out = nullptr;
+    int len_out = 0;
+
+    parse_args(fakeArgc, fakeArgv.data(), ar_out, &len_out);
+
+    RC_ASSERT(len_out == 0);
+    RC_ASSERT(ar_out == nullptr);
+
+    free(ar_out);
+
+
 }
