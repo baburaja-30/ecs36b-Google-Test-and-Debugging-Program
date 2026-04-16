@@ -204,3 +204,33 @@ Pass `len - i` to `min_index_of_array` and add `i` to `min_index` in the swap ca
 int min_index = min_index_of_array(ar + i, len - i);
 swap(ar + i, ar + i + min_index);
 ```
+
+### Bug 6
+
+### Location
+
+Line 14 in `sorting.cpp`
+
+```c
+int* sorted_ar = copy_array(ar, len);
+make_sorted(ar, len);
+return sorted_ar;
+```
+
+### How the bug was located
+
+The `GetSortedTests` failed. It returned array was unsorted and the original array was being modified.
+
+### Description
+
+`get_sorted` correctly made a copy of the array into `sorted_ar`, but then called `make_sorted` on the original array instead of the copy. 
+
+### Fix
+
+Changed `make_sorted(ar, len)` to `make_sorted(sorted_ar, len)` so the copy gets sorted instead of the original.
+
+```c
+int* sorted_ar = copy_array(ar, len);
+make_sorted(sorted_ar, len);
+return sorted_ar;
+```
