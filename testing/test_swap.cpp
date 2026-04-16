@@ -15,8 +15,8 @@ TEST(SwapTests, SimpleSwapTwoValues) {
 
     swap(&a, &b);
 
-    EXPECT_EQ(a , 6);
-    EXPECT_EQ(b , 5);
+    EXPECT_EQ(a , 2);
+    EXPECT_EQ(b , 1);
 }
 
 TEST(SwapTests, SimpleSwapValuesInArray) {

@@ -66,7 +66,7 @@ void swap(int* a, int* b) {
  * @param b: The address of the second element to swap.
  */
 
-  int* temp = a;
-  a = b;
-  b = temp;
+  int temp = *a;
+  *a = *b;
+  *b = temp;
 }

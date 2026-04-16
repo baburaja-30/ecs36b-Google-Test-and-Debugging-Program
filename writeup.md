@@ -116,24 +116,28 @@ if (argc > 1) {
 
 ### Location
 
-Line number(s) of the bugs.
+Lines 68-71 in `sorting.cpp`
 
-```c++
-Copy of the buggy code
+```c
+int* temp = a;
+a = b;
+b = temp;
 ```
 
 ### How the bug was located
 
-Explain how you found the bug
+The swap tests failed. After calling swap, the values of `a` and `b` were unchanged. 
 
 ### Description
 
-Describe the bug
+The function was swapping the **pointers** `a` and `b` themselves instead of the **values** they point to. This made the original values remain unchanged.
 
 ### Fix
 
-Explain how you fixed the bug
+Changed the swap to operate on the dereferenced values using `*a` and `*b` instead of the pointers themselves. Used an `int` temp variable instead of `int*` to store the value temporarily.
 
-```c++
-Copy of the fixed code
+```c
+int temp = *a;
+*a = *b;
+*b = temp;
 ```
