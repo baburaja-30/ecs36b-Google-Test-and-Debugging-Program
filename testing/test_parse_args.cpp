@@ -114,5 +114,4 @@ RC_GTEST_PROP(ParseArgsTests,
 
     free(ar_out);
 
-
 }
